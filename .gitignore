@@ -36,3 +36,6 @@ crash.log
 
 # For built boxes
 *.box
+
+# Packer variables
+packer-variables.txt
