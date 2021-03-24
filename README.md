@@ -62,7 +62,7 @@ resource group.
 az group create \
     --name packer-rg \
     --location eastus \
-    --tags "dept=Engineering"
+    --tags "dept=Engineering" \
     --tags "task=Packer image"
 ```
 
@@ -108,7 +108,9 @@ az vm create \
     --name myVM \
     --image udacityUbuntuWebServerPacker \
     --admin-username azureuser \
-    --generate-ssh-keys
+    --generate-ssh-keys \
+    --tags "dept=Engineering" \
+    --tags "task=Packer image test"
 ```
 
 To allow web traffic to reach your VM, open port 80 from the Internet with `az vm open-port`:
