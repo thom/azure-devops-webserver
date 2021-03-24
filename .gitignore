@@ -27,3 +27,12 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
+
+# Packer cache objects
+packer_cache/
+
+# Packer crash log
+crash.log
+
+# For built boxes
+*.box
