@@ -33,7 +33,7 @@ az policy definition create \
     --metadata "version=1.0.0" \
     --metadata "category=Tags" \
     --mode "Indexed" \
-    --rules tagging-policy-rules.json
+    --rules policies/tagging-policy-rules.json
 ```
 
 Apply the policy to ensure all indexed resources are tagged:
@@ -95,7 +95,7 @@ export ARM_SUBSCRIPTION_ID="<subscription_id>"
 Build the image by specifying your Packer template file as follows:
 
 ```bash
-packer build server.json
+packer build packer/server.json
 ```
 
 Packer creates a new OS image called "udacityUbuntuWebServerPacker" in the `packer-rg` resource group.
