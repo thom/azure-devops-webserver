@@ -21,6 +21,19 @@ cluster of servers - with a load balancer to manage the incoming traffic.
 
 ## Instructions
 
+### Login with Azure CLI
+
+This project uses your Azure user and the Azure CLI to login and execute
+commands:
+
+```bash
+az login
+```
+
+Check [Create an Azure service principal with the Azure
+CLI](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest)
+if you prefer using a service principal instead.
+
 ### Create and manage tagging policy to enforce compliance
 
 Create the tagging policy:
@@ -64,32 +77,6 @@ az group create \
     --location eastus \
     --tags "dept=Engineering" \
     --tags "task=Packer image"
-```
-
-Packer authenticates with Azure using a service principal. An Azure service
-principal is a security identity that you can use with apps, services, and
-automation tools like Packer. You control and define the permissions as to what
-operations the service principal can perform in Azure.
-
-```bash
-az ad sp create-for-rbac \
-    --name "https://packer.io" \
-    --role "Contributor" \
-    --query "{ client_id: appId, client_secret: password, tenant_id: tenant }"
-```
-
-To authenticate to Azure, you also need to obtain your Azure subscription ID with az account show:
-
-```bash
-az account show --query "{ subscription_id: id }"
-```
-
-Configure environment variables for Packer to run under the context of the above service principal:
-
-```bash
-export ARM_CLIENT_ID="<client_id>"
-export ARM_CLIENT_SECRET="<client_secret>"
-export ARM_SUBSCRIPTION_ID="<subscription_id>"
 ```
 
 Build the image by specifying your Packer template file as follows:
