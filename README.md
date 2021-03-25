@@ -14,7 +14,7 @@ cluster of servers - with a load balancer to manage the incoming traffic.
 
 ## Dependencies
 
-1. Create an [Azure Account](https://portal.azure.com) 
+1. Create an [Azure Account](https://portal.azure.com)
 2. Install the [Azure command line interface](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
 3. Install [Packer](https://www.packer.io/downloads)
 4. Install [Terraform](https://www.terraform.io/downloads.html)
@@ -40,13 +40,13 @@ Create the tagging policy:
 
 ```bash
 az policy definition create \
-    --name "tagging-policy" \
+    --name "policy-tagging" \
     --description "This policy ensures that all indexed resources are tagged." \
     --display-name "Deny indexed resources without tags" \
     --metadata "version=1.0.0" \
     --metadata "category=Tags" \
     --mode "Indexed" \
-    --rules policies/tagging-policy-rules.json
+    --rules policies/policy-tagging-rules.json
 ```
 
 Apply the policy to ensure all indexed resources are tagged:
@@ -54,8 +54,8 @@ Apply the policy to ensure all indexed resources are tagged:
 ```bash
 az policy assignment create \
     --display-name "Deny indexed resources without tags" \
-    --name "tagging-policy-assignment" \
-    --policy "tagging-policy"
+    --name "policy-assignment-tagging" \
+    --policy "policy-tagging"
 ```
 
 Make sure the policy has been assigned:
@@ -73,7 +73,7 @@ resource group.
 
 ```bash
 az group create \
-    --name packer-rg \
+    --name rg-packer \
     --location eastus \
     --tags "dept=Engineering" \
     --tags "task=Packer image"
@@ -85,15 +85,15 @@ Build the image by specifying your Packer template file as follows:
 packer build packer/server.json
 ```
 
-Packer creates a new OS image called "udacityUbuntuWebServerPacker" in the `packer-rg` resource group.
+Packer creates a new OS image called "managed-image-ubuntu-nginx-packer" in the `rg-packer` resource group.
 
 Optionally you can now test the images created by Packer with `az vm create`:
 
 ```bash
 az vm create \
-    --resource-group packer-rg \
-    --name myVM \
-    --image udacityUbuntuWebServerPacker \
+    --resource-group rg-packer \
+    --name vm-packer-test \
+    --image managed-image-ubuntu-nginx-packer \
     --admin-username azureuser \
     --generate-ssh-keys \
     --tags "dept=Engineering" \
@@ -104,8 +104,8 @@ To allow web traffic to reach your VM, open port 80 from the Internet with `az v
 
 ```bash
 az vm open-port \
-    --resource-group packer-rg \
-    --name myVM \
+    --resource-group rg-packer \
+    --name vm-packer-test \
     --port 80
 ```
 
@@ -115,6 +115,8 @@ TBD
 
 ## References
 
+* [Recommended abbreviations for Azure resource types](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
+* [Define your naming convention for Azure resources](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
 * [Quickstart: Create a policy assignment to identify non-compliant resources with Azure CLI](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-azurecli)
 * [Quickstart: Create a policy assignment to identify non-compliant resources using Terraform](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-terraform)
 * [Tutorial: Create and manage policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
@@ -123,6 +125,7 @@ TBD
 * [Creating Custom VM Images in Azure using Packer](https://microsoft.github.io/AzureTipsAndTricks/blog/tip201.html)
 * [How to use Packer to create Linux virtual machine images in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/build-image-with-packer)
 * [Create an Azure virtual machine scale set from a Packer custom image by using Terraform](https://docs.microsoft.com/en-us/azure/developer/terraform/create-vm-scaleset-network-disks-using-packer-hcl)
+* [Terraform Style Conventions](https://www.terraform.io/docs/language/syntax/style.html)
 
 ## Requirements
 
