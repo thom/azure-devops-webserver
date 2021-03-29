@@ -16,12 +16,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "rg" {
   name     = "rg-udacity"
   location = "eastus"
-  tags = {
-    dept        = "Engineering"
-    environment = "Production"
-    project     = "Udacity Cloud DevOps using Microsoft Azure Nanodegree Program: Deploying a Web Server in Azure"
-    createdby   = "Terraform"
-  }
+  tags     = var.tags
 }
 
 # Create a virtual network
