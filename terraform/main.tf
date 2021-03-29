@@ -15,7 +15,7 @@ provider "azurerm" {
 # Create resource group
 resource "azurerm_resource_group" "rg" {
   name     = "rg-udacity"
-  location = "eastus"
+  location = var.location
   tags     = var.tags
 }
 
@@ -23,7 +23,7 @@ resource "azurerm_resource_group" "rg" {
 resource "azurerm_virtual_network" "vnet" {
   name                = "vnet-udacity"
   address_space       = ["10.0.0.0/16"]
-  location            = "eastus"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
 }
@@ -39,7 +39,7 @@ resource "azurerm_subnet" "subnet" {
 # Create public IP
 resource "azurerm_public_ip" "publicip" {
   name                = "pip-udacity"
-  location            = "eastus"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
@@ -49,7 +49,7 @@ resource "azurerm_public_ip" "publicip" {
 # Create Network Security Group and rule
 resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-udacity"
-  location            = "eastus"
+  location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
   tags                = var.tags
 
@@ -69,7 +69,7 @@ resource "azurerm_network_security_group" "nsg" {
 # Create network interface
 resource "azurerm_network_interface" "nic" {
   name                      = "nic-udacity"
-  location                  = "eastus"
+  location                  = var.location
   resource_group_name       = azurerm_resource_group.rg.name
   tags                      = var.tags
 
@@ -81,20 +81,10 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-variable "admin_username" {
-    type = string
-    description = "Administrator user name for virtual machine"
-}
-
-variable "admin_password" {
-    type = string
-    description = "Password must meet Azure complexity requirements"
-}
-
 # Create a Linux virtual machine
 resource "azurerm_virtual_machine" "vm" {
   name                  = "vm-udacity"
-  location              = "eastus"
+  location              = var.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = "Standard_B1s"
