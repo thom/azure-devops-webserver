@@ -25,6 +25,7 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   location            = "eastus"
   resource_group_name = azurerm_resource_group.rg.name
+  tags                = var.tags
 }
 
 # Create subnet
@@ -42,6 +43,7 @@ resource "azurerm_public_ip" "publicip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Static"
   sku                 = "Standard"
+  tags                = var.tags
 }
 
 # Create Network Security Group and rule
@@ -49,6 +51,7 @@ resource "azurerm_network_security_group" "nsg" {
   name                = "nsg-udacity"
   location            = "eastus"
   resource_group_name = azurerm_resource_group.rg.name
+  tags                = var.tags
 
   security_rule {
     name                       = "AllowSSHInBound"
@@ -68,6 +71,7 @@ resource "azurerm_network_interface" "nic" {
   name                      = "nic-udacity"
   location                  = "eastus"
   resource_group_name       = azurerm_resource_group.rg.name
+  tags                      = var.tags
 
   ip_configuration {
     name                          = "nic-config-udacity"
@@ -94,6 +98,7 @@ resource "azurerm_virtual_machine" "vm" {
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
   vm_size               = "Standard_B1s"
+  tags                  = var.tags
 
   storage_os_disk {
     name              = "osdisk-udacity"
