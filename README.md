@@ -1,5 +1,18 @@
 # Azure Infrastructure Operations Project: Deploying a scalable IaaS web server in Azure
 
+- [Introduction](#introduction)
+- [Getting Started](#getting-started)
+- [Dependencies](#dependencies)
+- [Instructions](#instructions)
+  - [Login with Azure CLI](#login-with-azure-cli)
+  - [Create and manage tagging policy to enforce compliance](#create-and-manage-tagging-policy-to-enforce-compliance)
+  - [Build Packer image](#build-packer-image)
+- [Output](#output)
+- [Clean-up](#clean-up)
+- [References](#references)
+- [Requirements](#requirements)
+- [License](#license)
+
 ## Introduction
 
 This project builds a scalable nginx deployment. It uses Packer to create a server image, and Terraform to create a template for deploying a scalable cluster of servers - with a load balancer to manage the incoming traffic.
