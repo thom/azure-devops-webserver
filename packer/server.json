@@ -7,17 +7,29 @@
             "image_publisher": "Canonical",
             "image_offer": "UbuntuServer",
             "image_sku": "18.04-LTS",
-            "managed_image_resource_group_name": "rg-packer",
-            "managed_image_name": "managed-image-ubuntu-nginx-packer",
+            "managed_image_resource_group_name": "udacity-web-server-rg-packer",
+            "managed_image_name": "udacity-web-server-image-ubuntu-nginx",
             "location": "East US",
             "vm_size": "Standard_B1s",
             "azure_tags": {
                 "dept": "Engineering",
-                "task": "Image deployment"
+                "environment": "Production",
+                "project": "Udacity Cloud DevOps",
+                "createdby": "Packer"
             }
         }
     ],
     "provisioners": [
+        {
+            "type": "file",
+            "source": "packer/nginx-default.conf",
+            "destination": "~/nginx-default.conf"
+        },
+        {
+            "type": "file",
+            "source": "packer/index.html",
+            "destination": "~/index.html"
+        },
         {
             "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
             "inline": [
@@ -25,7 +37,9 @@
                 "apt upgrade -y",
                 "apt-get -y install nginx",
                 "apt autoremove -y",
-                "echo 'Hello, World!' > /var/www/html/index.html",
+                "mv ~/index.html /var/www/html/index.html",
+                "mv ~/nginx-default.conf /etc/nginx/sites-available/default",
+                "systemctl restart nginx",
                 "/usr/sbin/waagent -force -deprovision && export HISTSIZE=0 && sync"
             ],
             "inline_shebang": "/bin/sh -x",

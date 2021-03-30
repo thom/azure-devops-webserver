@@ -2,9 +2,7 @@
 
 ## Introduction
 
-This project builds a scalable nginx deployment. It uses Packer to create a
-server image, and Terraform to create a template for deploying a scalable
-cluster of servers - with a load balancer to manage the incoming traffic.
+This project builds a scalable nginx deployment. It uses Packer to create a server image, and Terraform to create a template for deploying a scalable cluster of servers - with a load balancer to manage the incoming traffic.
 
 ## Getting Started
 
@@ -23,16 +21,13 @@ cluster of servers - with a load balancer to manage the incoming traffic.
 
 ### Login with Azure CLI
 
-This project uses your Azure user and the Azure CLI to login and execute
-commands:
+This project uses your Azure user and the Azure CLI to login and execute commands:
 
 ```bash
 az login
 ```
 
-Check [Create an Azure service principal with the Azure
-CLI](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest)
-if you prefer using a service principal instead.
+Check [Create an Azure service principal with the Azure CLI](https://docs.microsoft.com/en-us/cli/azure/create-an-azure-service-principal-azure-cli?view=azure-cli-latest) if you prefer using a service principal instead.
 
 ### Create and manage tagging policy to enforce compliance
 
@@ -66,17 +61,16 @@ az policy assignment list
 
 ### Build Packer image
 
-During the build process, Packer creates temporary Azure resources as it builds
-the source VM. To capture that source VM for use as an image, you must define a
-resource group. The output from the Packer build process is stored in this
-resource group.
+During the build process, Packer creates temporary Azure resources as it builds the source VM. To capture that source VM for use as an image, you must define a resource group. The output from the Packer build process is stored in this resource group.
 
 ```bash
 az group create \
-    --name rg-packer \
+    --name udacity-web-server-rg-packer \
     --location eastus \
     --tags "dept=Engineering" \
-    --tags "task=Packer image"
+    --tags "environment=Development" \
+    --tags "project=Udacity Cloud DevOps" \
+    --tags "createdby=CLI"
 ```
 
 Build the image by specifying your Packer template file as follows:
@@ -85,28 +79,30 @@ Build the image by specifying your Packer template file as follows:
 packer build packer/server.json
 ```
 
-Packer creates a new OS image called "managed-image-ubuntu-nginx-packer" in the `rg-packer` resource group.
+Packer creates a new OS image called "udacity-web-server-image-ubuntu-nginx" in the `udacity-web-server-rg-packer` resource group.
 
 Optionally you can now test the images created by Packer with `az vm create`:
 
 ```bash
 az vm create \
-    --resource-group rg-packer \
+    --resource-group udacity-web-server-rg-packer \
     --name vm-packer-test \
-    --image managed-image-ubuntu-nginx-packer \
+    --image udacity-web-server-image-ubuntu-nginx \
     --admin-username azureuser \
     --generate-ssh-keys \
     --tags "dept=Engineering" \
-    --tags "task=Packer image test"
+    --tags "environment=Test" \
+    --tags "project=Udacity Cloud DevOps" \
+    --tags "createdby=CLI"
 ```
 
-To allow web traffic to reach your VM, open port 80 from the Internet with `az vm open-port`:
+To allow web traffic to reach your VM, open port 8080 from the Internet with `az vm open-port`:
 
 ```bash
 az vm open-port \
-    --resource-group rg-packer \
+    --resource-group udacity-web-server-rg-packer \
     --name vm-packer-test \
-    --port 80
+    --port 8080
 ```
 
 ## Output
@@ -115,17 +111,17 @@ TBD
 
 ## References
 
-* [Recommended abbreviations for Azure resource types](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
-* [Define your naming convention for Azure resources](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
-* [Quickstart: Create a policy assignment to identify non-compliant resources with Azure CLI](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-azurecli)
-* [Quickstart: Create a policy assignment to identify non-compliant resources using Terraform](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-terraform)
-* [Tutorial: Create and manage policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
-* [Tutorial: Manage tag governance with Azure Policy](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/govern-tags)
-* [Assign policies for tag compliance](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies)
-* [Creating Custom VM Images in Azure using Packer](https://microsoft.github.io/AzureTipsAndTricks/blog/tip201.html)
-* [How to use Packer to create Linux virtual machine images in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/build-image-with-packer)
-* [Create an Azure virtual machine scale set from a Packer custom image by using Terraform](https://docs.microsoft.com/en-us/azure/developer/terraform/create-vm-scaleset-network-disks-using-packer-hcl)
-* [Terraform Style Conventions](https://www.terraform.io/docs/language/syntax/style.html)
+- [Recommended abbreviations for Azure resource types](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
+- [Define your naming convention for Azure resources](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming)
+- [Quickstart: Create a policy assignment to identify non-compliant resources with Azure CLI](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-azurecli)
+- [Quickstart: Create a policy assignment to identify non-compliant resources using Terraform](https://docs.microsoft.com/en-us/azure/governance/policy/assign-policy-terraform)
+- [Tutorial: Create and manage policies to enforce compliance](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/create-and-manage)
+- [Tutorial: Manage tag governance with Azure Policy](https://docs.microsoft.com/en-us/azure/governance/policy/tutorials/govern-tags)
+- [Assign policies for tag compliance](https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/tag-policies)
+- [Creating Custom VM Images in Azure using Packer](https://microsoft.github.io/AzureTipsAndTricks/blog/tip201.html)
+- [How to use Packer to create Linux virtual machine images in Azure](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/build-image-with-packer)
+- [Create an Azure virtual machine scale set from a Packer custom image by using Terraform](https://docs.microsoft.com/en-us/azure/developer/terraform/create-vm-scaleset-network-disks-using-packer-hcl)
+- [Terraform Style Conventions](https://www.terraform.io/docs/language/syntax/style.html)
 
 ## Requirements
 
@@ -133,5 +129,5 @@ Graded according to the [Project Rubric](https://review.udacity.com/#!/rubrics/2
 
 ## License
 
-* **[MIT license](http://opensource.org/licenses/mit-license.php)**
-* Copyright 2021 © [Thomas Weibel](https://github.com/thom).
+- **[MIT license](http://opensource.org/licenses/mit-license.php)**
+- Copyright 2021 © [Thomas Weibel](https://github.com/thom).
