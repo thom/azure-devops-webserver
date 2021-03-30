@@ -109,6 +109,39 @@ az vm open-port \
 
 TBD
 
+## Clean-up
+
+1. Destroy the Terraform resources:
+
+   ```bash
+   cd terraform
+   terraform destroy
+   ```
+
+2. Delete the image generated with Packer:
+
+   ```bash
+   az image delete --name udacity-web-server-image-ubuntu-nginx --resource-group udacity-web-server-rg-packer
+   ```
+
+3. Delete the Packer resource group:
+
+   ```bash
+   az group delete --yes --name udacity-web-server-rg-packer
+   ```
+
+4. Delete the policy assignment:
+
+   ```bash
+   az policy assignment delete --name policy-assignment-tagging
+   ```
+
+5. Delete the policy definition:
+
+   ```bash
+   az policy definition delete --name policy-tagging
+   ```
+
 ## References
 
 - [Recommended abbreviations for Azure resource types](https://docs.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations)
