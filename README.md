@@ -7,6 +7,7 @@
   - [Login with Azure CLI](#login-with-azure-cli)
   - [Create and manage tagging policy to enforce compliance](#create-and-manage-tagging-policy-to-enforce-compliance)
   - [Build Packer image](#build-packer-image)
+  - [Deploy resources with Terraform](#deploy-resources-with-terraform)
 - [Output](#output)
 - [Clean-up](#clean-up)
 - [References](#references)
@@ -118,9 +119,85 @@ az vm open-port \
     --port 8080
 ```
 
+Use `curl` to validate the VM works as expected:
+
+```bash
+curl http://1.2.3.4:8080/
+```
+
+### Deploy resources with Terraform
+
+1. Customize Terraform by either changing `terraform.tfvars` or `variables.tf`
+
+2. Initialize the directory for Terraform:
+
+   ```bash
+   cd terraform
+   terraform init
+   ```
+
+3. Validate the Terraform configuration:
+
+   ```bash
+   terraform validate
+   ```
+
+4. Plan the changes and store them in a plan:
+
+    ```bash
+   terraform plan -out solution.plan
+   ```
+
+5. Apply the changes:
+
+    ```bash
+   terraform apply solution.plan
+   ```
+
 ## Output
 
-TBD
+Terraform creates 24 resources and prints the URL of the webserver:
+
+```bash
+Apply complete! Resources: 24 added, 0 changed, 0 destroyed.
+
+The state of your infrastructure has been saved to the path
+below. This state is required to modify and destroy your
+infrastructure, so keep it safe. To inspect the complete state
+use the `terraform show` command.
+
+State path: terraform.tfstate
+
+Outputs:
+
+public_ip_address = "http://1.2.3.4/"
+```
+
+Check if everything is working by either opening the URL in your browser or executing the following command:
+
+```bash
+curl http://1.2.3.4/
+```
+
+The result should be:
+
+```bash
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hello, World!</title>
+</head>
+
+<body>
+
+    <h1>Hello, World!</h1>
+    <p>Welcome to awesome my website.</p>
+
+</body>
+
+</html>
+```
 
 ## Clean-up
 
