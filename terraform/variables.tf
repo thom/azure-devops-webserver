@@ -57,12 +57,24 @@ variable "vm_admin_password" {
 
 locals {
   nsg_rules = {
+    allow_http_inbound = {
+      access                     = "Allow"
+      direction                  = "Inbound"
+      name                       = "AllowHTTPInBound"
+      priority                   = 100
+      protocol                   = "TCP"
+      source_port_range          = "*"
+      destination_port_range     = "8080"
+      source_address_prefix      = "*"
+      destination_address_prefix = "*"
+    }
+
     allow_vnet_inbound = {
       access                     = "Allow"
       direction                  = "Inbound"
       name                       = "AllowVnetInBound"
       description                = "Allow access to other VMs on the subnet"
-      priority                   = 200
+      priority                   = 1000
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
@@ -75,7 +87,7 @@ locals {
       direction                  = "Inbound"
       name                       = "DenyInternetInBound"
       description                = "Deny direct access from the internet"
-      priority                   = 100
+      priority                   = 2000
       protocol                   = "*"
       source_port_range          = "*"
       destination_port_range     = "*"
