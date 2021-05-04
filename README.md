@@ -1,4 +1,4 @@
-# Azure Infrastructure Operations Project: Deploying a scalable IaaS web server in Azure
+# Udacity Cloud DevOps using Microsoft Azure Nanodegree Program - Project: Deploying a Web Server in Azure
 
 - [Introduction](#introduction)
 - [Getting Started](#getting-started)
